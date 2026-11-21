@@ -119,11 +119,14 @@ const redraw = () => drawCard($('#card'), form());
 fontsP.then(redraw); redraw();
 
 /* ---------- forms → email (FormSubmit) ---------- */
-const configured = () => CFG.formTo && !/YOUR-EMAIL/i.test(CFG.formTo);
+const hasW3F = () => CFG.web3formsKey && !/YOUR-/i.test(CFG.web3formsKey);
+const hasFS = () => CFG.formTo && !/YOUR-EMAIL/i.test(CFG.formTo);
 async function send(fields, subject, honey) {
   if (honey) return true;
-  if (!configured()) throw new Error('not-configured');
-  const r = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(CFG.formTo)}`, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ ...fields, _subject: subject, _template: 'table', _captcha: 'false' }) });
+  let r;
+  if (hasW3F()) r = await fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ access_key: CFG.web3formsKey, subject, from_name: 'JSRO website', ...fields }) });
+  else if (hasFS()) r = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(CFG.formTo)}`, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ ...fields, _subject: subject, _template: 'table', _captcha: 'false' }) });
+  else throw new Error('not-configured');
   const j = await r.json().catch(() => ({})); if (!r.ok || String(j.success) === 'false') throw new Error(j.message || 'send-failed'); return true;
 }
 const failMsg = err => err.message === 'not-configured' ? 'Sign-ups open very soon — the form isn’t connected yet.' : 'That didn’t go through. Please try again in a minute.';

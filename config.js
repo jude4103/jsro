@@ -1,8 +1,9 @@
 /* JSRO site settings.
-   formTo: where Subscribe and Join submissions are emailed (via FormSubmit.co).
-   After the first submission on the live site, FormSubmit emails you a confirmation link.
-   Once confirmed, FormSubmit also gives you a random string; paste it here instead of
-   your email so the address isn't visible in the page source. */
+   web3formsKey: your Web3Forms access key (get it free at https://web3forms.com — enter your email,
+   the key arrives by email). Subscribe and Join submissions are then emailed to you.
+   The key is safe to keep in the page: it can only send mail to you.
+   formTo: older FormSubmit setup, used only if web3formsKey is empty. */
 window.JSRO_CONFIG = {
-  formTo: 'anandjudelal10@gmail.com'
+  web3formsKey: 'YOUR-ACCESS-KEY',
+  formTo: ''
 };
