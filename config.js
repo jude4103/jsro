@@ -4,6 +4,6 @@
    The key is safe to keep in the page: it can only send mail to you.
    formTo: older FormSubmit setup, used only if web3formsKey is empty. */
 window.JSRO_CONFIG = {
-  web3formsKey: 'YOUR-ACCESS-KEY',
+  web3formsKey: '4c562bfe-941e-410b-be39-d7c1d0b28acf',
   formTo: ''
 };
