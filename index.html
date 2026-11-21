@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JSRO · Jude Space Research Organisation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a launch provider's public site — quiet, confident, black and white, the founder's own mark at the centre.
+   IDEA: the JSRO mark is a window; the O shows a different scene of space travel each few seconds.
+   PICTURE: full-screen starfield over Earth's blue limb with the live mark; then skywatch art, launch manifest, posters, the crew card.
+   COLOUR and TYPE: near-black in both themes, white, steel grey, one atmosphere blue; Barlow uppercase with tracking like the mark; Plex Mono only on the card.
+   LAYOUT: full-bleed stacked panels like SpaceX / Rocket Lab; outline buttons; data in tables; account and console as separate views. */
+:root{color-scheme:dark;--bg:#030408;--panel:#0a0d14;--line:rgba(255,255,255,.14);--ink:#fff;--mute:#9aa3b3;--blue:#3d8bff;--warn:#ff8a5c}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Barlow,system-ui,sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+h1,h2,h3{font-weight:600;text-transform:uppercase;letter-spacing:.04em;line-height:1.05;margin:0;text-wrap:balance}
+h2{font-size:clamp(30px,4.4vw,50px);margin-top:16px}
+h3{font-size:18px;letter-spacing:.08em}
+p{margin:0 0 1em;max-width:64ch}
+.k{font-size:13px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--mute)}
+.lead{color:#c9d0dc;font-size:18px}
+.band{padding:clamp(64px,9vw,130px) max(5vw,18px)}
+.bt{border-top:1px solid var(--line)}
+.wrap{max-width:1240px;margin:0 auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 26px;border:2px solid #fff;background:transparent;color:#fff;font:600 14px Barlow,sans-serif;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background .2s,color .2s;white-space:nowrap}
+.btn:hover{background:#fff;color:#000}
+.btn.solid{background:#fff;color:#000}.btn.solid:hover{background:transparent;color:#fff}
+.btn.sm{min-height:38px;padding:0 16px;font-size:12px}
+.btn[disabled]{opacity:.4;pointer-events:none}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.ctas{display:flex;flex-wrap:wrap;gap:14px}
+nav{position:fixed;inset:0 0 auto;z-index:10;display:flex;align-items:center;gap:6px 26px;flex-wrap:wrap;padding:14px max(5vw,18px);transition:background .3s}
+nav.solid{background:rgba(3,4,8,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .logo{height:40px;margin-inline-end:auto}nav .logo img{height:100%;display:block}
+nav a.l{font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;padding:10px 0;opacity:.82}
+nav a.l:hover,nav a.l[aria-current]{opacity:1}
+.hero{position:relative;min-height:100svh;display:grid;grid-template-rows:1fr auto;overflow:hidden;background:#020307}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.limb{position:absolute;width:240vmax;aspect-ratio:1;border-radius:50%;left:50%;top:78%;transform:translateX(-30%);background:radial-gradient(circle at 50% 8%,#0d2550 0,#061024 22%,#020307 48%);box-shadow:0 -1px 0 rgba(170,210,255,.9),0 -10px 40px rgba(61,139,255,.55),0 -60px 160px rgba(61,139,255,.25)}
+.mark{position:relative;width:min(880px,88vw);margin:auto;align-self:center;padding-top:80px}
+.logo-live{position:relative}
+.logo-live .ring{display:block;width:100%;height:auto;position:relative;z-index:2}
+.logo-live .win{position:absolute;left:74%;top:32.83%;width:15.6%;aspect-ratio:1;border-radius:50%;overflow:hidden;z-index:1;background:#000}
+.win .sl{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease}
+.win .sl.on{opacity:1}
+.win .sl img{position:absolute;width:113%;left:-6.5%;top:-6.5%;height:auto}
+.hero .foot{position:relative;z-index:3;width:100%;max-width:1240px;margin:0 auto;padding:0 max(5vw,18px) clamp(40px,7vh,80px);display:flex;flex-wrap:wrap;gap:24px 40px;align-items:flex-end;justify-content:space-between}
+.hero h1{font-size:clamp(30px,4.6vw,56px);margin-top:12px}
+.mission{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,6vw,90px);align-items:start}
+.story p{color:#d4d9e3}
+.pillars div{padding:22px 0;border-top:1px solid var(--line)}
+.pillars p{color:var(--mute);margin:8px 0 0}
+.next{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:clamp(48px,7vw,90px)}
+.next a{display:block;padding:26px 24px 26px 0;text-decoration:none}
+.next a+a{border-left:1px solid var(--line);padding-left:24px}
+.next b{display:block;font-size:clamp(24px,2.8vw,34px);font-weight:600;text-transform:uppercase;letter-spacing:.03em;margin:8px 0 4px;line-height:1.1}
+.next span.s{color:var(--mute)}
+.feat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);background:#000;border-top:1px solid var(--line)}
+.feat .art{position:relative;min-height:560px;overflow:hidden}
+.feat .art{margin:0;background:#000}.feat .art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.feat .art figcaption{position:absolute;left:0;right:0;bottom:0;padding:40px 20px 14px;font-size:12px;color:#c9d0dc;background:linear-gradient(transparent,rgba(0,0,0,.75))}
+.feat .txt{padding:clamp(48px,7vw,100px) max(5vw,18px)}
+.t{display:flex;gap:clamp(14px,3vw,34px);margin:28px 0}
+.t b{display:block;font-size:clamp(36px,5vw,60px);font-weight:500;line-height:1;font-variant-numeric:tabular-nums}
+.t span{font-size:12px;letter-spacing:.2em;color:var(--mute);text-transform:uppercase}
+table{width:100%;border-collapse:collapse;font-size:16px}
+th,td{text-align:left;padding:14px 14px 14px 0;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+.spec td:first-child{color:var(--mute);width:34%}
+.later{margin-top:8px}
+.later td.d{white-space:nowrap;font-weight:600;width:170px}
+.later small,.lt small{display:block;color:var(--mute);font-size:15px;margin-top:4px;max-width:70ch}
+.pill{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;border:1px solid var(--line);padding:3px 8px;white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:32px 0 10px}
+.chips button{all:unset;cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;padding:10px 16px;border:1px solid var(--line);min-height:20px}
+.chips button[aria-pressed=true]{background:#fff;color:#000;border-color:#fff}
+.lt td.d{white-space:nowrap;font-weight:600}
+.lt tr.first td{background:rgba(61,139,255,.07)}
+.src{color:var(--mute);font-size:15px;margin-top:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:18px;margin-top:44px}
+.poster{border:1px solid var(--line);background:#000;display:flex;flex-direction:column}
+.poster img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:#05070c}
+.poster img.sq{aspect-ratio:1}
+.poster div{padding:16px;display:grid;gap:10px;margin-top:auto}
+.poster b{font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:15px}
+.poster span{color:var(--mute);font-size:14px}
+.sub-h{margin-top:56px}
+#crew{background:var(--panel)}
+.joingrid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,5vw,70px);margin-top:44px;align-items:start}
+form{display:grid;gap:18px}
+label{display:grid;gap:8px;font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+label small{letter-spacing:.04em;text-transform:none;font-weight:400}
+input,select,textarea{font:17px Barlow,sans-serif;color:#fff;background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.35);border-radius:0;padding:10px 0;min-height:46px;width:100%}
+select option{background:#0a0d14}
+textarea{border:1px solid rgba(255,255,255,.35);padding:12px;min-height:120px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#fff}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.cardbox{position:sticky;top:96px}
+canvas.card{width:100%;height:auto;aspect-ratio:1012/638;display:block;border-radius:18px;box-shadow:0 40px 80px -30px #000,0 0 0 1px var(--line)}
+.note{color:var(--mute);font-size:15px;margin:0;min-height:1.4em}
+.note.ok{color:#cfe2ff}
+.disp{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:clamp(28px,5vw,70px);margin-top:44px;align-items:start}
+.issue{border-top:1px solid #fff;padding:22px 0 30px}
+.issue .meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-bottom:14px}
+.issue h3{font-size:clamp(22px,2.6vw,30px);letter-spacing:.03em;margin-bottom:16px}
+.issue p{color:#d4d9e3}
+.issue+.issue{border-top-color:var(--line)}
+.sub{border:1px solid var(--line);padding:28px;position:sticky;top:96px}
+.sub p{color:var(--mute);font-size:15.5px;margin:10px 0 22px}
+.heritage{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);gap:clamp(28px,5vw,70px);align-items:center;margin-top:44px}
+.heritage img{width:100%;height:auto;display:block;opacity:.92}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:18px;padding:18px 0;border-top:1px solid var(--line)}
+.tl b{font-size:22px;font-weight:600}.tl p{color:var(--mute);margin:0}
+.view{min-height:100svh;padding:120px max(5vw,18px) 80px}
+.acct{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,5vw,70px);margin-top:40px;align-items:start}
+.box{border:1px solid var(--line);padding:26px}
+.box+.box{margin-top:18px}
+.row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.row span:first-child{color:var(--mute)}
+.switch{display:flex;align-items:center;gap:12px;cursor:pointer;font-size:16px;letter-spacing:0;text-transform:none;color:#fff;font-weight:500}
+.switch input{width:22px;height:22px;min-height:0;accent-color:#fff}
+.tabsbar{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--line);margin-top:32px}
+.tabsbar button{all:unset;cursor:pointer;padding:14px 20px;font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabsbar button[aria-selected=true]{color:#fff;border-color:#fff}
+.pane{padding-top:28px}
+.act{display:flex;flex-wrap:wrap;gap:8px}
+.st-pending{color:#ffd27a}.st-accepted{color:#8fd19e}.st-declined{color:var(--warn)}
+footer{border-top:1px solid var(--line);padding:44px max(5vw,18px)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:20px 40px;align-items:center;justify-content:space-between}
+footer img{height:46px;display:block}
+footer p{color:var(--mute);font-size:14px;margin:0}
+@media(max-width:1000px){nav a.l.o{display:none}}
+@media(max-width:900px){.mission,.joingrid,.disp,.heritage,.feat,.acct{grid-template-columns:minmax(0,1fr)}.cardbox,.sub{position:static}.feat .art{min-height:0;aspect-ratio:1}}
+@media(max-width:600px){nav a.l{display:none}.two,.next{grid-template-columns:minmax(0,1fr)}.next a+a{border-left:0;border-top:1px solid var(--line);padding-left:0}.tl li{grid-template-columns:minmax(0,1fr);gap:4px}.mark{padding-top:96px}
+ table{font-size:15px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:6.5em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:6em;margin-inline-start:-6.5em;color:var(--mute);font-size:11px;letter-spacing:.15em;text-transform:uppercase;padding-top:3px}.stack td:empty{display:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.win .sl{transition:none}}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+<nav id="nav">
+  <a class="logo" href="#top" aria-label="JSRO home"><img src="assets/logo-full.png" alt="JSRO"></a>
+  <a class="l o" href="#mission">Mission</a>
+  <a class="l" href="#skywatch">Skywatch</a>
+  <a class="l" href="#launches">Launches</a>
+  <a class="l o" href="#collectibles">Collectibles</a>
+  <a class="l" href="#dispatches">Dispatches</a>
+  <a class="btn sm" href="#crew">Join</a>
+</nav>
+
+<main id="site">
+<header class="hero" id="top">
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="limb" aria-hidden="true"></div>
+  <div class="mark">
+    <div class="logo-live"><div class="win" id="heroWin"></div><img class="ring" src="assets/logo-ring.png" alt="JSRO — Jude Space Research Organisation, since 2014"></div>
+  </div>
+  <div class="foot">
+    <div><div class="k">Jude Space Research Organisation</div><h1>Advancing forward<br>since 2014</h1></div>
+    <div class="ctas"><a class="btn solid" href="#crew">Join the crew</a><a class="btn" href="#skywatch">What's up next</a></div>
+  </div>
+</header>
+
+<section class="band" id="mission">
+  <div class="wrap">
+    <div class="mission">
+      <div>
+        <div class="k">Mission</div>
+        <h2>Making life multiplanetary</h2>
+      </div>
+      <div class="story">
+        <p class="lead">It all started with an obsession for rockets and space. In 2014, a ten-year-old who knew of exactly one space agency decided the world needed another, gave it his name, and drew its first logo by hand.</p>
+        <p>Since 2014, JSRO has had one aim: to help make humans a multiplanetary species. Today that means following every launch, getting people outside for every sky event worth seeing, and building a crew who care about getting there as much as we do.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skywatch">
+  <div class="feat">
+    <figure class="art" id="evArt"></figure>
+    <div class="txt">
+      <div class="k" id="evK">Skywatch</div>
+      <h2 id="evT">—</h2>
+      <p class="lead" id="evS"></p>
+      <div class="t" aria-live="off"><div><b id="cd-d">--</b><span>Days</span></div><div><b id="cd-h">--</b><span>Hrs</span></div><div><b id="cd-m">--</b><span>Min</span></div></div>
+      <table class="spec"><tbody id="evF"></tbody></table>
+    </div>
+  </div>
+  <div class="band" style="padding-top:clamp(48px,6vw,80px)">
+    <div class="wrap">
+      <div class="k">Coming up in the sky</div>
+      <table class="later stack" style="margin-top:14px"><thead><tr><th>Date</th><th>Event</th><th>Viewing</th></tr></thead><tbody id="evL"></tbody></table>
+      <p class="src">Dates and times for India (IST). Each event drops off this page once it's over.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band bt" id="launches">
+  <div class="wrap">
+    <div class="k">Launch manifest</div>
+    <h2>Upcoming launches</h2>
+    <p class="lead" style="margin-top:16px">Rockets on the pad around the world, with the ones from Sriharikota marked. Launch dates slip all the time — treat every date as "no earlier than".</p>
+    <div class="chips" id="laChips">
+      <button type="button" data-f="all" aria-pressed="true">All</button>
+      <button type="button" data-f="india" aria-pressed="false">India</button>
+      <button type="button" data-f="crewed" aria-pressed="false">Crewed</button>
+      <button type="button" data-f="station" aria-pressed="false">Space stations</button>
+    </div>
+    <table class="lt stack"><thead><tr><th>Date</th><th>Mission</th><th>Rocket</th><th>Launch site</th></tr></thead><tbody id="laL"></tbody></table>
+    <p class="src">Updated <span id="laUpd"></span>. For live times, follow <a href="https://nextspaceflight.com/launches/" target="_blank" rel="noopener">Next Spaceflight</a> and <a href="https://www.isro.gov.in/" target="_blank" rel="noopener">ISRO</a>.</p>
+  </div>
+</section>
+
+<section class="band bt" id="collectibles">
+  <div class="wrap">
+    <div class="k">Collectibles</div>
+    <h2>Posters &amp; downloads</h2>
+    <p class="lead" style="margin-top:16px">Free to download, print, or set as your wallpaper. Every upcoming sky event and Indian launch gets a poster, made with photos from NASA and ISRO.</p>
+    <div class="k sub-h">Skywatch posters</div>
+    <div class="grid" id="genPosters"></div>
+    <div class="k sub-h">From the JSRO archive</div>
+    <div class="grid" id="arcPosters"></div>
+    <p class="note" id="dlNote" style="margin-top:18px"></p>
+  </div>
+</section>
+
+<section class="band" id="crew">
+  <div class="wrap">
+    <div class="k">Crew programme</div>
+    <h2>Join the crew</h2>
+    <p class="lead" style="margin-top:16px">Join JSRO and help us make humans a multiplanetary species!</p>
+    <div class="joingrid">
+      <form id="joinForm" autocomplete="on"><input type="text" name="_honey" tabindex="-1" autocomplete="off" style="display:none">
+        <label>Full name<input id="f-name" maxlength="40" required autocomplete="name"></label>
+        <label>Email<input id="f-mail" type="email" maxlength="80" required autocomplete="email"></label>
+        <div class="two">
+          <label>Callsign <small>optional</small><input id="f-call" maxlength="20" autocomplete="off"></label>
+          <label>Home base<input id="f-base" maxlength="26" autocomplete="address-level2"></label>
+        </div>
+        <label>Role<select id="f-role" required>
+          <option value="" selected disabled>Select a role</option>
+          <optgroup label="Research"><option>Space Researcher</option><option>Astrophysics Researcher</option><option>Planetary Scientist</option><option>Student Researcher</option></optgroup>
+          <optgroup label="Engineering"><option>Aerospace Engineer</option><option>Propulsion Engineer</option><option>Avionics Engineer</option><option>Payload Engineer</option></optgroup>
+          <optgroup label="Operations"><option>Mission Specialist</option><option>Flight Director</option><option>Ground Operations</option></optgroup>
+          <optgroup label="Outreach"><option>Science Communicator</option><option>Skywatch Observer</option><option>Astrophotographer</option></optgroup>
+        </select></label>
+        <label>Favourite thing in the sky<input id="f-fav" maxlength="30" autocomplete="off"></label>
+        <label>Why do you want to join?<textarea id="f-why" maxlength="800" required></textarea></label>
+        <label>Link <small>optional — LinkedIn, portfolio, anything</small><input id="f-link" type="url" maxlength="200"></label>
+        <div class="ctas" style="margin-top:6px"><button class="btn solid" type="submit" id="joinBtn">Submit application</button></div>
+        <p class="note" id="joinMsg" role="status"></p>
+      </form>
+      <div class="cardbox"><canvas class="card" id="card" width="1012" height="638" aria-label="Preview of your JSRO crew ID card"></canvas><p class="note" style="margin-top:12px">Preview. Your crew number is assigned once your application is accepted.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="dispatches">
+  <div class="wrap">
+    <div class="k">Newsletter</div>
+    <h2>Dispatches</h2>
+    <div class="disp">
+      <div>
+        <div id="issues"></div>
+        <article class="issue">
+          <div class="meta"><span class="k">Issue 001</span><span class="k">November 2026</span></div>
+          <h3>Hello from JSRO</h3>
+          <p>If you're reading this, you've signed up for something I started when I was ten. Back then JSRO was a name in a notebook and a logo drawn with a sketch pen. It took twelve years, and for the first time, people other than me.</p>
+          <p>These dispatches will be short. I'll write when there's something worth your attention: a night worth staying up for, a launch worth watching live, and now and then some news from the agency.</p>
+          <p>Two things for the next few weeks. ISRO is aiming to fly Gaganyaan G1 in December — the first uncrewed test of India's crew capsule, with the robot Vyommitra riding along. And on the night of 13–14 December the Geminids peak under a thin Moon. Find somewhere dark, lie back, and give it twenty minutes.</p>
+          <p>Thanks for being here at the start.</p>
+          <p>— Jude</p>
+        </article>
+      </div>
+      <aside class="sub" id="subscribe">
+        <h3>Subscribe</h3>
+        <p>Get new dispatches by email. No spam — just a note when there's something worth looking up for.</p>
+        <form id="subForm"><input type="text" name="_honey" tabindex="-1" autocomplete="off" style="display:none">
+          <label>Name<input id="s-name" maxlength="40" autocomplete="name"></label>
+          <label>Email<input id="s-mail" type="email" maxlength="80" required autocomplete="email"></label>
+          <button class="btn solid" type="submit">Subscribe</button>
+          <p class="note" id="subMsg" role="status"></p>
+        </form>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="band bt" id="heritage">
+  <div class="wrap">
+    <div class="k">Heritage</div>
+    <h2>The original mark, 2014</h2>
+    <div class="heritage">
+      <img src="assets/original-2014.png" alt="The original hand-drawn JSRO logo: Advancing forward since 2014">
+      <ol class="tl">
+        <li><b>2014</b><p>JSRO is founded by Jude at the age of 10. The first logo, drawn by hand, still holds the vision.</p></li>
+        <li><b>2026</b><p>JSRO opens to members and crew.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <img src="assets/logo-full.png" alt="JSRO">
+    <p>© 2026 Jude Space Research Organisation · An independent, unofficial organisation, not affiliated with ISRO.</p>
+  </div>
+</footer>
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
